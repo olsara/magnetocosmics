@@ -1,4 +1,4 @@
-// 9/25/2026, Olesya Sarajlic: This COMMON block is written during every field
+// 9/25/2026: This COMMON block is written during every field
 //   evaluation (per-call scratch), so it is declared 'thread_local' to make
 //   Geant4 multithreaded magnetic-field evaluation race-free. Each worker
 //   thread gets its own copy. (bdip_ and igrfcc_ stay shared: they are set

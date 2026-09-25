@@ -1,4 +1,4 @@
-// 9/25/2026, Olesya Sarajlic: The per-call scratch COMMON blocks used by this
+// 9/25/2026: The per-call scratch COMMON blocks used by this
 //   model (e.g. warp_, tail_, rcpar_, dphi_b_rho0__, dtheta_, g_, modenum_,
 //   birkpar_, where_in_magnetopause2001__) are declared 'extern thread_local'
 //   below so multithreaded field evaluation is race-free. bdip_/igrfcc_ remain

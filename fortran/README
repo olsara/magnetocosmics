@@ -40,7 +40,7 @@ Build:  cd fortran && make      (produces lib/libFortranMagField.a)
 
 
 --------------------------------------------------------------------------
-THREAD-SAFETY (9/25/2026, Olesya Sarajlic)
+THREAD-SAFETY (9/25/2026)
 --------------------------------------------------------------------------
 To support Geant4 multithreaded runs (see ECRS2021), the COMMON blocks that
 are written on every field evaluation are declared 'thread_local' so each
