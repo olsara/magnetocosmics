@@ -1,29 +1,37 @@
-ifndef USE_TSY04
-OBJECTS = Tsy89c_mod.o  Tsy96_magcos.o  igrf_to_c++.o  \
-	  Tsyg_01_scaled_to_B0_magcos.o
+# Builds libFortranMagField.a from the C++ translations of the original
+# Fortran magnetic-field models (Tsyganenko T89/T96/T01 and IGRF).
+#
+# The models were mechanically translated from Fortran-77 to C++ with f2c
+# and verified numerically against the original code (T89 and IGRF are
+# bit-/single-precision-exact; T96/T01 agree with the originals to well
+# within the models' own finite-difference noise floor).  No external
+# libf2c is required: the few runtime helpers used (d_sign, pow_dd, pow_di)
+# are provided by f2c_intrinsics.cc.
 
-SRC = Tsy89c_mod.for  Tsy96_magcos.for  igrf_to_c++.for  \
-	  Tsyg_01_scaled_to_B0_magcos.for
-else
-OBJECTS = Tsy89c_mod.o  Tsy96_magcos.o  igrf_to_c++.o  \
-	  Tsyg_01_scaled_to_B0_magcos.o Tsyganenko04_mod.o
+CXX      = g++
+CXXFLAGS = -O2 -I.
 
-SRC = Tsy89c_mod.for  Tsy96_magcos.for  igrf_to_c++.for  \
-	  Tsyg_01_scaled_to_B0_magcos.for Tsyganenko04_mod.for
+CPPSRC = igrf_to_cc.cpp Tsy89c_mod.cpp Tsy96_magcos.cpp \
+         Tsyg_01_scaled_to_B0_magcos.cpp \
+         bdip_com.cpp birkpar_com.cpp dphi_b_rho0__com.cpp dtheta_com.cpp \
+         g_com.cpp igrfcc_com.cpp modenum_com.cpp rcpar_com.cpp tail_com.cpp \
+         warp_com.cpp where_in_magnetopause2001__com.cpp \
+         f2c_intrinsics.cc
 
-endif	 	
-	    
+OBJ = $(addsuffix .o,$(basename $(CPPSRC)))
 
-#C = g77 -O -g  
-C = gfortran -O -g  
-
-lib/libFortranMagField.a : $(SRC)
-	@echo "compiling ..."
-	@$(C) -c $(SRC)
+lib/libFortranMagField.a : $(OBJ)
 	@if [ ! -d lib ]; then mkdir lib; fi
-	@echo "creating  lib/libFortranMagField.a ..."
-	@ar -r lib/libFortranMagField.a *.o
-	@rm *.o
+	@echo "creating lib/libFortranMagField.a ..."
+	ar -r lib/libFortranMagField.a $(OBJ)
+	rm -f $(OBJ)
 
-clean  :
-	@if [ -d lib ];then echo "cleaning ..."; rm -r  lib; else  echo "Nothing to clean"; fi	
+%.o : %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.o : %.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean :
+	@if [ -d lib ]; then echo "cleaning ..."; rm -f *.o lib/libFortranMagField.a; \
+	 else echo "Nothing to clean"; fi
