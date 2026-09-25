@@ -69,7 +69,7 @@ extern "C"
  extern struct ccgeopack_dbl geopack_dbl__;
  extern struct ccbdip bdip_;
  extern struct ccgeocoef_dbl geocoef_dbl__;
- extern struct ccwhere_in_magnetopause2001 where_in_magnetopause2001__;	
+ extern thread_local struct ccwhere_in_magnetopause2001 where_in_magnetopause2001__;   // thread-local: written per field evaluation	
  extern struct ccigrf igrfcc_;	  
 
  //extern void  mcos_t01_01__(int*,float*, float*,float*,float*,float*,
@@ -96,3 +96,4 @@ extern "C"
                                         double*,double*,double*);*/					
  
  }
+

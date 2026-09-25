@@ -1,3 +1,8 @@
+// 9/25/2026, Olesya Sarajlic: The per-call scratch COMMON blocks used by this
+//   model (e.g. warp_, tail_, rcpar_, dphi_b_rho0__, dtheta_, g_, modenum_,
+//   birkpar_, where_in_magnetopause2001__) are declared 'extern thread_local'
+//   below so multithreaded field evaluation is race-free. bdip_/igrfcc_ remain
+//   shared (set once at config, read-only during tracking).
 /* Tsyg_01_scaled_to_B0_magcos.f -- translated by f2c (version 20240504).
    You must link the resulting object file with libf2c:
 	on Microsoft Windows system, link with libf2c.lib;
@@ -24,7 +29,7 @@ extern struct {
 
 #define bdip_1 bdip_
 
-extern union {
+extern thread_local union {
     struct {
 	doublereal dxshift1, dxshift2, d__, deltady;
     } _1;
@@ -36,13 +41,13 @@ extern union {
 #define tail_1 (tail_._1)
 #define tail_2 (tail_._2)
 
-extern struct {
+extern thread_local struct {
     doublereal xkappa1, xkappa2;
 } birkpar_;
 
 #define birkpar_1 birkpar_
 
-extern union {
+extern thread_local union {
     struct {
 	doublereal sc_sy__, sc_as__, phi;
     } _1;
@@ -54,7 +59,7 @@ extern union {
 #define rcpar_1 (rcpar_._1)
 #define rcpar_2 (rcpar_._2)
 
-extern struct {
+extern thread_local struct {
     doublereal g;
 } g_;
 
@@ -66,25 +71,25 @@ struct rh0_1_ {
 
 #define rh0_1 (*(struct rh0_1_ *) &rh0_)
 
-extern struct {
+extern thread_local struct {
     doublereal dphi, b, rho_0__, xkappa;
 } dphi_b_rho0__;
 
 #define dphi_b_rho0__1 dphi_b_rho0__
 
-extern struct {
+extern thread_local struct {
     integer m;
 } modenum_;
 
 #define modenum_1 modenum_
 
-extern struct {
+extern thread_local struct {
     doublereal dtheta;
 } dtheta_;
 
 #define dtheta_1 dtheta_
 
-extern struct {
+extern thread_local struct {
     integer location;
 } where_in_magnetopause2001__;
 
@@ -3989,4 +3994,5 @@ L1:
 #ifdef __cplusplus
 	}
 #endif
+
 

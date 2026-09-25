@@ -1,3 +1,8 @@
+// 9/25/2026, Olesya Sarajlic: The per-call scratch COMMON blocks used by this
+//   model (e.g. warp_, tail_, rcpar_, dphi_b_rho0__, dtheta_, g_, modenum_,
+//   birkpar_, where_in_magnetopause2001__) are declared 'extern thread_local'
+//   below so multithreaded field evaluation is race-free. bdip_/igrfcc_ remain
+//   shared (set once at config, read-only during tracking).
 /* Tsy96_magcos.f -- translated by f2c (version 20240504).
    You must link the resulting object file with libf2c:
 	on Microsoft Windows system, link with libf2c.lib;
@@ -24,7 +29,7 @@ extern struct {
 
 #define bdip_1 bdip_
 
-extern union {
+extern thread_local union {
     struct {
 	doublereal cpss, spss, dpsrr, rps, warp, d__, xs, zs, dxsx, dxsy, 
 		dxsz, dzsx, dzsy, dzsz, dzetas, ddzetadx, ddzetady, ddzetadz, 
@@ -4137,4 +4142,5 @@ L1:
 #ifdef __cplusplus
 	}
 #endif
+
 

@@ -37,3 +37,23 @@ models' own finite-difference noise floor (worst-case ~0.07 nT, at near-zero
 field points).
 
 Build:  cd fortran && make      (produces lib/libFortranMagField.a)
+
+
+--------------------------------------------------------------------------
+THREAD-SAFETY (9/25/2026, Olesya Sarajlic)
+--------------------------------------------------------------------------
+To support Geant4 multithreaded runs (see ECRS2021), the COMMON blocks that
+are written on every field evaluation are declared 'thread_local' so each
+worker thread has its own private copy and concurrent field evaluations do
+not race:
+
+  warp_, tail_, rcpar_, dphi_b_rho0__, dtheta_, g_, modenum_, birkpar_,
+  where_in_magnetopause2001__
+
+The blocks bdip_ and igrfcc_ are intentionally left shared: they are set once
+at configuration time (dipole moment / IGRF coefficients) and are only read
+during tracking, so shared read-only access is safe and, unlike thread_local,
+does not require re-initialisation on every worker thread.
+
+Single-thread results are unchanged (a thread_local block with one thread is
+identical to an ordinary zero-initialised global).
